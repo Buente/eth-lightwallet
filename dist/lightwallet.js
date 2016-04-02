@@ -34681,6 +34681,14 @@ Buffer.prototype.slice = function slice (start, end) {
   var newBuf
   if (Buffer.TYPED_ARRAY_SUPPORT) {
     newBuf = Buffer._augment(this.subarray(start, end))
+    if (end-start!=newBuf.length) {
+       // FIX for Edge25
+       var sliceLen = end - start
+       newBuf = new Buffer(sliceLen, undefined)
+       for (var i = 0; i < sliceLen; i++) {
+         newBuf[i] = this[i + start]
+       }
+    }
   } else {
     var sliceLen = end - start
     newBuf = new Buffer(sliceLen, undefined)
